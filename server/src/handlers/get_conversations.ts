@@ -1,4 +1,19 @@
 
+import { db } from '../db';
+import { conversationsTable } from '../db/schema';
 import { type Conversation } from '../schema';
+import { desc } from 'drizzle-orm';
 
-export declare function getConversations(): Promise<Conversation[]>;
+export const getConversations = async (): Promise<Conversation[]> => {
+  try {
+    const results = await db.select()
+      .from(conversationsTable)
+      .orderBy(desc(conversationsTable.updated_at))
+      .execute();
+
+    return results;
+  } catch (error) {
+    console.error('Get conversations failed:', error);
+    throw error;
+  }
+};
